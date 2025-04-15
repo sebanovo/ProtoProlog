@@ -80,6 +80,7 @@
             textBox1.Name = "textBox1";
             textBox1.Size = new Size(484, 375);
             textBox1.TabIndex = 1;
+            textBox1.Text = "a :- m.\r\np :- a, fail, m.\r\np :- b, c.\r\np :- m.\r\nb :- a, fail.\r\nb :- m.\r\nm.";
             // 
             // textBox2
             // 
@@ -87,6 +88,7 @@
             textBox2.Name = "textBox2";
             textBox2.Size = new Size(244, 27);
             textBox2.TabIndex = 2;
+            textBox2.Text = "p";
             // 
             // inferirBtn
             // 

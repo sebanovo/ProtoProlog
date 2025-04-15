@@ -14,6 +14,10 @@ public partial class Form1 : Form
 
     private void inferirBtn_Click(object sender, EventArgs e)
     {
-        // inferir boton
+        Prolog prolog = new();
+        string programa = textBox1.Text;
+        string consulta = textBox2.Text;
+        prolog.CargarPrograma(programa);
+        MessageBox.Show(prolog.Consultar(consulta).ToString());
     }
 }
