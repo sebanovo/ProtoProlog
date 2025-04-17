@@ -68,10 +68,11 @@ class Prolog
 
     public bool Consultar(string objetivo)
     {
-        return Resolver(objetivo);
+        bool hayCut = false;
+        return Resolver(objetivo, ref hayCut);
     }
 
-    public bool Resolver(string objetivo)
+    public bool Resolver(string objetivo, ref bool  hayCut)
     {
         foreach (var regla in reglas)
         {
@@ -83,9 +84,17 @@ class Prolog
             }
             else
             {
-                if (ResolverCuerpo(regla.Cuerpo, 0))
+                bool cutEnEstaRama = false;
+                if (ResolverCuerpo(regla.Cuerpo, 0, ref cutEnEstaRama))
                 {
+                    hayCut &= cutEnEstaRama;
                     return true;
+                }
+
+                if(cutEnEstaRama)
+                {
+                    hayCut = true;
+                    return false;
                 }
             }
         }
@@ -93,16 +102,21 @@ class Prolog
         return false; 
     }
 
-    private bool ResolverCuerpo(List<string> cuerpo, int indice)
+    private bool ResolverCuerpo(List<string> cuerpo, int indice, ref bool hayCut)
     {
         if (indice >= cuerpo.Count)
             return true;
         string submeta = cuerpo[indice];
+        if(submeta == CUT)
+        {
+            hayCut = true;
+            return ResolverCuerpo(cuerpo, indice + 1, ref hayCut);
+        }
         if(submeta == FAIL)
             return false; 
-        if (Resolver(submeta))
+        if (Resolver(submeta, ref hayCut))
         {
-            return ResolverCuerpo(cuerpo, indice + 1);
+            return ResolverCuerpo(cuerpo, indice + 1, ref hayCut);
         }
         return false;
     }
