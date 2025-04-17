@@ -7,24 +7,6 @@ using System.Threading.Tasks;
 
 namespace ProtoProlog;
 
-
-class Regla
-{
-    public List<string> Cuerpo { get; set; } = [];
-    public string Cabeza = "";
-
-    public bool EsHecho()
-    {
-        return Cuerpo.Count == 0;
-    }
-    public override string ToString()
-    {
-        if (EsHecho())
-            return Cabeza + "."; // Hecho
-        return $"{Cabeza} :- {string.Join(", ", Cuerpo)}."; // Regla
-    }
-}
-
 class Prolog
 {
     private List<Regla> reglas = [];
@@ -68,8 +50,18 @@ class Prolog
 
     public bool Consultar(string objetivo)
     {
-        bool hayCut = false;
-        return Resolver(objetivo, ref hayCut);
+        var cuerpo = objetivo.TrimEnd('.').Split(',').Select(p => p.Trim()).ToList();
+
+        Regla regla = new();
+        regla.Cabeza = "";
+        regla.Cuerpo = cuerpo;
+
+        foreach(var o in regla.Cuerpo)
+        {
+            bool hayCut = false;
+            if (!Resolver(o, ref hayCut)) return false;
+        }
+        return true;
     }
 
     public bool Resolver(string objetivo, ref bool  hayCut)
@@ -120,5 +112,8 @@ class Prolog
         }
         return false;
     }
-
+    public void DescargarPrograma()
+    {
+        reglas.Clear();
+    }
 }
