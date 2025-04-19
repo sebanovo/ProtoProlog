@@ -38,6 +38,7 @@
             editor = new ScintillaNET.Scintilla();
             label1 = new Label();
             consultaTextBox = new ScintillaNET.Scintilla();
+            labelFileName = new Label();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -51,7 +52,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { archivoToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(581, 28);
+            menuStrip1.Size = new Size(493, 28);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -67,20 +68,22 @@
             cargarToolStripMenuItem.Name = "cargarToolStripMenuItem";
             cargarToolStripMenuItem.Size = new Size(145, 26);
             cargarToolStripMenuItem.Text = "Cargar";
+            cargarToolStripMenuItem.Click += cargarToolStripMenuItem_Click;
             // 
             // guardarToolStripMenuItem
             // 
             guardarToolStripMenuItem.Name = "guardarToolStripMenuItem";
             guardarToolStripMenuItem.Size = new Size(145, 26);
             guardarToolStripMenuItem.Text = "Guardar";
+            guardarToolStripMenuItem.Click += guardarToolStripMenuItem_Click;
             // 
             // inferirBtn
             // 
-            inferirBtn.Location = new Point(463, 447);
+            inferirBtn.Location = new Point(328, 438);
             inferirBtn.Name = "inferirBtn";
             inferirBtn.Size = new Size(94, 29);
             inferirBtn.TabIndex = 3;
-            inferirBtn.Text = "Inferir";
+            inferirBtn.Text = "INFERIR";
             inferirBtn.UseVisualStyleBackColor = true;
             inferirBtn.Click += inferirBtn_Click;
             // 
@@ -93,14 +96,14 @@
             editor.ScrollWidth = 166;
             editor.Size = new Size(349, 359);
             editor.TabIndex = 5;
-            editor.Text = "p :- a, b, c.\r\na.\r\n% Esto es un comentario\r\na :- fail.\r\na :- !.";
             // 
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(45, 451);
+            label1.Font = new Font("Segoe UI", 13.8F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            label1.Location = new Point(43, 438);
             label1.Name = "label1";
-            label1.Size = new Size(22, 20);
+            label1.Size = new Size(33, 31);
             label1.TabIndex = 6;
             label1.Text = "?-";
             // 
@@ -108,18 +111,27 @@
             // 
             consultaTextBox.AutocompleteListSelectedBackColor = Color.FromArgb(0, 120, 215);
             consultaTextBox.LexerName = null;
-            consultaTextBox.Location = new Point(73, 451);
+            consultaTextBox.Location = new Point(73, 430);
             consultaTextBox.Name = "consultaTextBox";
             consultaTextBox.ScrollWidth = 57;
-            consultaTextBox.Size = new Size(87, 24);
+            consultaTextBox.Size = new Size(194, 46);
             consultaTextBox.TabIndex = 7;
-            consultaTextBox.Text = "p";
+            // 
+            // labelFileName
+            // 
+            labelFileName.AutoSize = true;
+            labelFileName.Location = new Point(73, 29);
+            labelFileName.Name = "labelFileName";
+            labelFileName.Size = new Size(50, 20);
+            labelFileName.TabIndex = 8;
+            labelFileName.Text = "label2";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(581, 514);
+            ClientSize = new Size(493, 499);
+            Controls.Add(labelFileName);
             Controls.Add(consultaTextBox);
             Controls.Add(label1);
             Controls.Add(editor);
@@ -146,5 +158,6 @@
         private ScintillaNET.Scintilla editor;
         private Label label1;
         private ScintillaNET.Scintilla consultaTextBox;
+        private Label labelFileName;
     }
 }

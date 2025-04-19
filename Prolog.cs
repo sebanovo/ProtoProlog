@@ -19,6 +19,7 @@ class Prolog
 
         foreach (var linea in lineas)
         {
+            if (linea.Contains('%')) continue;
             var texto = linea.Trim().TrimEnd('.');
             if (string.IsNullOrWhiteSpace(texto)) continue;
 
