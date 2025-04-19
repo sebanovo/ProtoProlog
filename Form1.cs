@@ -37,6 +37,7 @@ public partial class Form1 : Form
 
         string filePath = openFileDialog1.FileName;
         editor.Text = File.ReadAllText(filePath);
+        labelFileName.Text = Path.GetFileName(filePath);
     }
 
     private void guardarToolStripMenuItem_Click(object sender, EventArgs e)

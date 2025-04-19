@@ -26,6 +26,7 @@ class Prolog
             if (texto.Contains(":-"))
             {
                 var partes = texto.Split([":-"], StringSplitOptions.None);
+                for(int i = 0; i < partes.Length; i++) { }
                 var cabeza = partes[0].Trim();
                 var cuerpo = partes[1].Split(',').Select(p => p.Trim()).ToList();
 

@@ -122,9 +122,8 @@
             labelFileName.AutoSize = true;
             labelFileName.Location = new Point(73, 29);
             labelFileName.Name = "labelFileName";
-            labelFileName.Size = new Size(50, 20);
+            labelFileName.Size = new Size(0, 20);
             labelFileName.TabIndex = 8;
-            labelFileName.Text = "label2";
             // 
             // Form1
             // 
