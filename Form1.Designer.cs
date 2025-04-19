@@ -34,9 +34,10 @@
             archivoToolStripMenuItem = new ToolStripMenuItem();
             cargarToolStripMenuItem = new ToolStripMenuItem();
             guardarToolStripMenuItem = new ToolStripMenuItem();
-            textBox1 = new TextBox();
-            textBox2 = new TextBox();
             inferirBtn = new Button();
+            editor = new ScintillaNET.Scintilla();
+            label1 = new Label();
+            consultaTextBox = new ScintillaNET.Scintilla();
             menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
@@ -50,7 +51,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { archivoToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(655, 28);
+            menuStrip1.Size = new Size(581, 28);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -73,41 +74,56 @@
             guardarToolStripMenuItem.Size = new Size(145, 26);
             guardarToolStripMenuItem.Text = "Guardar";
             // 
-            // textBox1
-            // 
-            textBox1.Location = new Point(73, 64);
-            textBox1.Multiline = true;
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(484, 375);
-            textBox1.TabIndex = 1;
-            textBox1.Text = "w.\r\np :- a, !, b.\r\np.\r\na :- w.";
-            // 
-            // textBox2
-            // 
-            textBox2.Location = new Point(73, 497);
-            textBox2.Name = "textBox2";
-            textBox2.Size = new Size(244, 27);
-            textBox2.TabIndex = 2;
-            textBox2.Text = "p";
-            // 
             // inferirBtn
             // 
-            inferirBtn.Location = new Point(463, 495);
+            inferirBtn.Location = new Point(463, 447);
             inferirBtn.Name = "inferirBtn";
             inferirBtn.Size = new Size(94, 29);
             inferirBtn.TabIndex = 3;
-            inferirBtn.Text = "inferir";
+            inferirBtn.Text = "Inferir";
             inferirBtn.UseVisualStyleBackColor = true;
             inferirBtn.Click += inferirBtn_Click;
+            // 
+            // editor
+            // 
+            editor.AutocompleteListSelectedBackColor = Color.FromArgb(0, 120, 215);
+            editor.LexerName = null;
+            editor.Location = new Point(73, 53);
+            editor.Name = "editor";
+            editor.ScrollWidth = 166;
+            editor.Size = new Size(349, 359);
+            editor.TabIndex = 5;
+            editor.Text = "p :- a, b, c.\r\na.\r\n% Esto es un comentario\r\na :- fail.\r\na :- !.";
+            // 
+            // label1
+            // 
+            label1.AutoSize = true;
+            label1.Location = new Point(45, 451);
+            label1.Name = "label1";
+            label1.Size = new Size(22, 20);
+            label1.TabIndex = 6;
+            label1.Text = "?-";
+            // 
+            // consultaTextBox
+            // 
+            consultaTextBox.AutocompleteListSelectedBackColor = Color.FromArgb(0, 120, 215);
+            consultaTextBox.LexerName = null;
+            consultaTextBox.Location = new Point(73, 451);
+            consultaTextBox.Name = "consultaTextBox";
+            consultaTextBox.ScrollWidth = 57;
+            consultaTextBox.Size = new Size(87, 24);
+            consultaTextBox.TabIndex = 7;
+            consultaTextBox.Text = "p";
             // 
             // Form1
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(655, 573);
+            ClientSize = new Size(581, 514);
+            Controls.Add(consultaTextBox);
+            Controls.Add(label1);
+            Controls.Add(editor);
             Controls.Add(inferirBtn);
-            Controls.Add(textBox2);
-            Controls.Add(textBox1);
             Controls.Add(menuStrip1);
             Name = "Form1";
             Text = "Form1";
@@ -126,8 +142,9 @@
         private ToolStripMenuItem archivoToolStripMenuItem;
         private ToolStripMenuItem cargarToolStripMenuItem;
         private ToolStripMenuItem guardarToolStripMenuItem;
-        private TextBox textBox1;
-        private TextBox textBox2;
         private Button inferirBtn;
+        private ScintillaNET.Scintilla editor;
+        private Label label1;
+        private ScintillaNET.Scintilla consultaTextBox;
     }
 }
