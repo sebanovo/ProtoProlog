@@ -13,14 +13,23 @@ class Prolog
     private string FAIL = "fail";
     private string CUT = "!";
 
+    public string eliminarComentario(string linea)
+    {
+        int index = linea.IndexOf('%');
+        if (index == -1) return linea;
+        return index == -1 ? linea : linea.Substring(0, index).Trim();
+    }
+
     public void CargarPrograma(string programa)
     {
-        var lineas = programa.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
+        var lineas = programa.Split(['\n'], StringSplitOptions.RemoveEmptyEntries);
 
         foreach (var linea in lineas)
         {
-            if (linea.Contains('%')) continue;
-            var texto = linea.Trim().TrimEnd('.');
+            string lineaSinComentario = eliminarComentario(linea);
+            if (lineaSinComentario == "") continue;
+
+            var texto = lineaSinComentario.Trim().TrimEnd('.');
             if (string.IsNullOrWhiteSpace(texto)) continue;
 
             if (texto.Contains(":-"))
@@ -40,20 +49,22 @@ class Prolog
 
     }
 
-    public void MostrarReglas()
+    public string MostrarReglas()
     {
         string output = "";
         foreach (var regla in reglas)
         {
             output += regla.ToString() + "\n";
         }
-        MessageBox.Show(output);
+        return output;
     }
 
     public bool Consultar(string objetivo)
     {
-        var cuerpo = objetivo.TrimEnd('.').Split(',').Select(p => p.Trim()).ToList();
+        List<string> cuerpo = objetivo.TrimEnd('.').Split(',').Select(p => p.Trim()).ToList();
 
+        // ?- q, r, s.
+        // <- q, r, s.
         Regla regla = new();
         regla.Cabeza = "";
         regla.Cuerpo = cuerpo;
