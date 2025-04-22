@@ -10,8 +10,8 @@ namespace ProtoProlog;
 class Prolog
 {
     private List<Regla> reglas = [];
-    private string FAIL = "fail";
-    private string CUT = "!";
+    private readonly string FAIL = "fail";
+    private readonly string CUT = "!";
 
     public string eliminarComentario(string linea)
     {
