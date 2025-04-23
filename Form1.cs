@@ -31,7 +31,7 @@ public partial class Form1 : Form
 
     private void cargarToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        openFileDialog1.Filter = "Archivos Prolog (*.pl)|*.pl";
+        openFileDialog1.Filter = "Archivos Prolog (*.pl)|*.pl|Documentos de texto (*.txt)|*.txt";
         openFileDialog1.Title = "Abrir archivo Prolog";
         if (openFileDialog1.ShowDialog() != DialogResult.OK) return;
 
@@ -42,12 +42,11 @@ public partial class Form1 : Form
 
     private void guardarToolStripMenuItem_Click(object sender, EventArgs e)
     {
-        saveFileDialog1.Filter = "Archivos Prolog (*.pl)|*.pl";
+        saveFileDialog1.Filter = "Archivos Prolog (*.pl)|*.pl|Documentos de text (*.txt)|*.txt";
         saveFileDialog1.Title = "Guardar archivo Prolog";
         if (saveFileDialog1.ShowDialog() != DialogResult.OK) return;
         File.WriteAllText(saveFileDialog1.FileName, editor.Text);
     }
-
 
     public void EstilarFormulario()
     {
@@ -117,16 +116,16 @@ public partial class Form1 : Form
                 scintella.SetStyling(m.Length, STYLE_OPERATOR);
             }
 
-            foreach (Match m in Regex.Matches(text, @"%.*"))
-            {
-                scintella.StartStyling(m.Index);
-                scintella.SetStyling(m.Length, STYLE_COMMENT);
-            }
-
             foreach (Match m in Regex.Matches(text, @"fail"))
             {
                 scintella.StartStyling(m.Index);
                 scintella.SetStyling(m.Length, STYLE_FAIL);
+            }
+
+            foreach (Match m in Regex.Matches(text, @"%.*"))
+            {
+                scintella.StartStyling(m.Index);
+                scintella.SetStyling(m.Length, STYLE_COMMENT);
             }
         };
     }

@@ -52,7 +52,7 @@
             menuStrip1.Items.AddRange(new ToolStripItem[] { archivoToolStripMenuItem });
             menuStrip1.Location = new Point(0, 0);
             menuStrip1.Name = "menuStrip1";
-            menuStrip1.Size = new Size(493, 28);
+            menuStrip1.Size = new Size(707, 28);
             menuStrip1.TabIndex = 0;
             menuStrip1.Text = "menuStrip1";
             // 
@@ -79,9 +79,9 @@
             // 
             // inferirBtn
             // 
-            inferirBtn.Location = new Point(328, 438);
+            inferirBtn.Location = new Point(530, 430);
             inferirBtn.Name = "inferirBtn";
-            inferirBtn.Size = new Size(94, 29);
+            inferirBtn.Size = new Size(109, 46);
             inferirBtn.TabIndex = 3;
             inferirBtn.Text = "INFERIR";
             inferirBtn.UseVisualStyleBackColor = true;
@@ -94,7 +94,7 @@
             editor.Location = new Point(73, 53);
             editor.Name = "editor";
             editor.ScrollWidth = 166;
-            editor.Size = new Size(349, 359);
+            editor.Size = new Size(566, 371);
             editor.TabIndex = 5;
             // 
             // label1
@@ -129,7 +129,7 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(493, 499);
+            ClientSize = new Size(707, 519);
             Controls.Add(labelFileName);
             Controls.Add(consultaTextBox);
             Controls.Add(label1);
