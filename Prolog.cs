@@ -92,7 +92,7 @@ class Prolog
                 bool cutEnEstaRama = false;
                 if (ResolverCuerpo(regla.Cuerpo, 0, ref cutEnEstaRama))
                 {
-                    hayCut &= cutEnEstaRama;
+                    hayCut = hayCut && cutEnEstaRama;
                     return true;
                 }
 
