@@ -9,11 +9,11 @@ namespace ProtoProlog;
 
 class Prolog
 {
-    private List<Regla> reglas = [];
+    private readonly List<Regla> reglas = [];
     private readonly string FAIL = "fail";
     private readonly string CUT = "!";
 
-    public string eliminarComentario(string linea)
+    public string EliminarComentario(string linea)
     {
         int index = linea.IndexOf('%');
         if (index == -1) return linea;
@@ -26,7 +26,7 @@ class Prolog
 
         foreach (var linea in lineas)
         {
-            string lineaSinComentario = eliminarComentario(linea);
+            string lineaSinComentario = EliminarComentario(linea);
             if (lineaSinComentario == "") continue;
 
             var texto = lineaSinComentario.Trim().TrimEnd('.');
@@ -35,7 +35,6 @@ class Prolog
             if (texto.Contains(":-"))
             {
                 var partes = texto.Split([":-"], StringSplitOptions.None);
-                for(int i = 0; i < partes.Length; i++) { }
                 var cabeza = partes[0].Trim();
                 var cuerpo = partes[1].Split(',').Select(p => p.Trim()).ToList();
 
@@ -69,7 +68,7 @@ class Prolog
         regla.Cabeza = "";
         regla.Cuerpo = cuerpo;
 
-        foreach(var o in regla.Cuerpo)
+        foreach (var o in regla.Cuerpo)
         {
             bool hayCut = false;
             if (!Resolver(o, ref hayCut)) return false;
@@ -77,7 +76,7 @@ class Prolog
         return true;
     }
 
-    public bool Resolver(string objetivo, ref bool  hayCut)
+    public bool Resolver(string objetivo, ref bool hayCut)
     {
         foreach (var regla in reglas)
         {
@@ -96,7 +95,7 @@ class Prolog
                     return true;
                 }
 
-                if(cutEnEstaRama)
+                if (cutEnEstaRama)
                 {
                     hayCut = true;
                     return false;
@@ -104,7 +103,7 @@ class Prolog
             }
         }
 
-        return false; 
+        return false;
     }
 
     private bool ResolverCuerpo(List<string> cuerpo, int indice, ref bool hayCut)
@@ -112,13 +111,13 @@ class Prolog
         if (indice >= cuerpo.Count)
             return true;
         string submeta = cuerpo[indice];
-        if(submeta == CUT)
+        if (submeta == CUT)
         {
             hayCut = true;
             return ResolverCuerpo(cuerpo, indice + 1, ref hayCut);
         }
-        if(submeta == FAIL)
-            return false; 
+        if (submeta == FAIL)
+            return false;
         if (Resolver(submeta, ref hayCut))
         {
             return ResolverCuerpo(cuerpo, indice + 1, ref hayCut);
