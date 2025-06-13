@@ -12,6 +12,7 @@ class Prolog
     private readonly List<Regla> reglas = [];
     private readonly string FAIL = "fail";
     private readonly string CUT = "!";
+    private readonly string PESO = "$";
 
     public string EliminarComentario(string linea)
     {
@@ -89,7 +90,16 @@ class Prolog
             else
             {
                 bool cutEnEstaRama = false;
-                if (ResolverCuerpo(regla.Cuerpo, 0, ref cutEnEstaRama))
+                bool hayCutAntesDePeso = false;
+                for (int i = 0; i < regla.Cuerpo.Count; i++)
+                {
+                    if (regla.Cuerpo[i] == CUT)
+                    {
+                        hayCutAntesDePeso = true;
+                        break;
+                    }
+                }
+                if (ResolverCuerpo(regla.Cuerpo, 0, ref cutEnEstaRama, ref hayCutAntesDePeso))
                 {
                     hayCut = hayCut && cutEnEstaRama;
                     return true;
@@ -106,21 +116,33 @@ class Prolog
         return false;
     }
 
-    private bool ResolverCuerpo(List<string> cuerpo, int indice, ref bool hayCut)
+    private bool ResolverCuerpo(List<string> cuerpo, int indice, ref bool hayCut, ref bool hayCutAntesDePeso)
     {
         if (indice >= cuerpo.Count)
             return true;
         string submeta = cuerpo[indice];
+        if (submeta == PESO)
+        {
+            if (hayCutAntesDePeso)
+            {
+                hayCut = true;
+                return ResolverCuerpo(cuerpo, indice + 1, ref hayCut, ref hayCutAntesDePeso);
+            }
+            else
+            {
+                return true;
+            }
+        }
         if (submeta == CUT)
         {
             hayCut = true;
-            return ResolverCuerpo(cuerpo, indice + 1, ref hayCut);
+            return ResolverCuerpo(cuerpo, indice + 1, ref hayCut, ref hayCutAntesDePeso);
         }
         if (submeta == FAIL)
             return false;
         if (Resolver(submeta, ref hayCut))
         {
-            return ResolverCuerpo(cuerpo, indice + 1, ref hayCut);
+            return ResolverCuerpo(cuerpo, indice + 1, ref hayCut, ref hayCutAntesDePeso);
         }
         return false;
     }
