@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ProtoProlog;
+﻿namespace ProtoProlog;
 
 class Prolog
 {
@@ -59,20 +52,25 @@ class Prolog
         return output;
     }
 
-    public bool Consultar(string objetivo)
+    public bool Consultar(string consulta)
     {
-        List<string> cuerpo = objetivo.TrimEnd('.').Split(',').Select(p => p.Trim()).ToList();
+        List<string> cuerpo = consulta.TrimEnd('.').Split(',').Select(p => p.Trim()).ToList();
 
         // ?- q, r, s.
         // <- q, r, s.
-        Regla regla = new();
-        regla.Cabeza = "";
-        regla.Cuerpo = cuerpo;
+        // TODO: implemented for (!) in the cuerpo
+        // example: ?- q, !, r, s.
+        Regla consultaClausula = new();
+        consultaClausula.Cabeza = "";
+        consultaClausula.Cuerpo = cuerpo;
 
-        foreach (var o in regla.Cuerpo)
+        foreach (var objetivo in consultaClausula.Cuerpo)
         {
             bool hayCut = false;
-            if (!Resolver(o, ref hayCut)) return false;
+            if (!Resolver(objetivo, ref hayCut))
+            {
+                return false;
+            }
         }
         return true;
     }
@@ -87,29 +85,26 @@ class Prolog
             {
                 return true;
             }
-            else
+            bool cutEnEstaRama = false;
+            bool hayCutAntesDePeso = false;
+            for (int i = 0; i < regla.Cuerpo.Count; i++)
             {
-                bool cutEnEstaRama = false;
-                bool hayCutAntesDePeso = false;
-                for (int i = 0; i < regla.Cuerpo.Count; i++)
+                if (regla.Cuerpo[i] == CUT)
                 {
-                    if (regla.Cuerpo[i] == CUT)
-                    {
-                        hayCutAntesDePeso = true;
-                        break;
-                    }
+                    hayCutAntesDePeso = true;
+                    break;
                 }
-                if (ResolverCuerpo(regla.Cuerpo, 0, ref cutEnEstaRama, ref hayCutAntesDePeso))
-                {
-                    hayCut = hayCut && cutEnEstaRama;
-                    return true;
-                }
+            }
+            if (ResolverCuerpo(regla.Cuerpo, 0, ref cutEnEstaRama, ref hayCutAntesDePeso))
+            {
+                hayCut = hayCut && cutEnEstaRama;
+                return true;
+            }
 
-                if (cutEnEstaRama)
-                {
-                    hayCut = true;
-                    return false;
-                }
+            if (cutEnEstaRama)
+            {
+                hayCut = true;
+                return false;
             }
         }
 
