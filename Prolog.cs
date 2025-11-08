@@ -2,9 +2,23 @@
 
 class Prolog
 {
-    private readonly List<Regla> reglas = [];
+    private readonly LinkedList<Clausula> baseDeConocimiento = [];
+    /// <summary>
+    /// Representa un fallo forzado. Cuando aparece en el cuerpo de una cláusula,
+    /// provoca el fallo inmediato de esa rama y activa el backtracking.
+    /// </summary>
     private readonly string FAIL = "fail";
+
+    /// <summary>
+    /// Representa el corte de backtracking (!).
+    /// Cancela las alternativas restantes dentro del mismo objetivo,
+    /// impidiendo regresar a otras cláusulas para la misma cabeza.
+    /// </summary>
     private readonly string CUT = "!";
+    /// <summary>
+    /// $ es true, pero si está después de un !, ejecuta el corte
+    /// y cancela el backtracking solo en la rama actual.
+    /// </summary>
     private readonly string PESO = "$";
 
     public string EliminarComentario(string linea)
@@ -32,11 +46,11 @@ class Prolog
                 var cabeza = partes[0].Trim();
                 var cuerpo = partes[1].Split(',').Select(p => p.Trim()).ToList();
 
-                reglas.Add(new Regla { Cabeza = cabeza, Cuerpo = cuerpo });
+                baseDeConocimiento.AddLast(new Clausula { Cabeza = cabeza, Cuerpo = cuerpo });
             }
             else
             {
-                reglas.Add(new Regla { Cabeza = texto });
+                baseDeConocimiento.AddLast(new Clausula { Cabeza = texto });
             }
         }
 
@@ -45,7 +59,7 @@ class Prolog
     public string MostrarReglas()
     {
         string output = "";
-        foreach (var regla in reglas)
+        foreach (var regla in baseDeConocimiento)
         {
             output += regla.ToString() + "\n";
         }
@@ -58,16 +72,43 @@ class Prolog
 
         // ?- q, r, s.
         // <- q, r, s.
-        // TODO: implemented for (!) in the cuerpo
-        // example: ?- q, !, r, s.
-        Regla consultaClausula = new();
-        consultaClausula.Cabeza = "";
-        consultaClausula.Cuerpo = cuerpo;
+        Clausula consultaRegla = new();
+        consultaRegla.Cabeza = "";
+        consultaRegla.Cuerpo = cuerpo;
 
-        foreach (var objetivo in consultaClausula.Cuerpo)
+        bool hayCutLocal = false;
+        foreach (var objetivo in consultaRegla.Cuerpo)
         {
-            bool hayCut = false;
-            if (!Resolver(objetivo, ref hayCut))
+            // validaciones
+            // TODO: implemented for (!) in the cuerpo
+            // example: ?- q, !, !. // si son ! saltar.
+            // TODO: implemented for (fail) in the cuerpo
+            // example: ?- q, fail, fail. // si son fallar.
+            // TODO: implemented for ($) in the cuerpo
+            // example: ?- q, !, $. // falla 
+
+            if (objetivo == FAIL)
+            {
+                return false;
+            }
+            if (objetivo == CUT)
+            {
+                hayCutLocal = true;
+                continue;
+            }
+            if (objetivo == PESO)
+            {
+                if (hayCutLocal)
+                {
+                    return false;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+            // resolver 
+            if (!Resolver(objetivo))
             {
                 return false;
             }
@@ -75,74 +116,92 @@ class Prolog
         return true;
     }
 
-    public bool Resolver(string objetivo, ref bool hayCut)
-    {
-        foreach (var regla in reglas)
-        {
-            if (regla.Cabeza != objetivo) continue;
 
-            if (regla.EsHecho())
+    public LinkedList<Clausula> ClausulasAplicables(string objetivo)
+    {
+        LinkedList<Clausula> L = new();
+        foreach (var clausula in baseDeConocimiento)
+        {
+            if (clausula.Cabeza.Equals(objetivo))
+            {
+                L.AddLast(clausula);
+            }
+        }
+        return L;
+    }
+
+    public Clausula ElegirClausula(LinkedList<Clausula> L)
+    {
+        Clausula Clausula = L.First!.Value;
+        L.RemoveFirst();
+        return Clausula;
+    }
+
+    public static int Vueltas = 0;
+    public bool Resolver(string objetivo)
+    {
+        LinkedList<Clausula> clausulas = ClausulasAplicables(objetivo);
+        while (clausulas.Count > 0)
+        {
+            Clausula clausula = ElegirClausula(clausulas);
+            if (clausula.EsHecho())
             {
                 return true;
             }
-            bool cutEnEstaRama = false;
-            bool hayCutAntesDePeso = false;
-            for (int i = 0; i < regla.Cuerpo.Count; i++)
+
+            bool cuerpoSatisfecho = true;
+            bool hayCutLocal = false;
+            bool hayCutAntesQuePeso = false;
+            for (int i = 0; i < clausula.Cuerpo.Count; i++)
             {
-                if (regla.Cuerpo[i] == CUT)
+                string subObjetivo = clausula.Cuerpo[i];
+                if (subObjetivo == CUT) // cancela el BT
                 {
-                    hayCutAntesDePeso = true;
+                    hayCutLocal = true;
+                    continue;
+                }
+                if (subObjetivo == PESO)
+                {
+                    if (hayCutLocal)
+                    {
+                        hayCutAntesQuePeso = true; // fuerza el BT
+                        break;
+                    }
+                    else
+                    {
+                        continue; // es true seguir nomas
+                    }
+                }
+                if (subObjetivo == FAIL) // fuerza el BT 
+                {
+                    cuerpoSatisfecho = false;
+                    break;
+                }
+                if (!Resolver(subObjetivo)) // solo cuando falla hace BT
+                {
+                    cuerpoSatisfecho = false;
                     break;
                 }
             }
-            if (ResolverCuerpo(regla.Cuerpo, 0, ref cutEnEstaRama, ref hayCutAntesDePeso))
+            if (hayCutAntesQuePeso)
             {
-                hayCut = hayCut && cutEnEstaRama;
+                continue;
+            }
+            if (cuerpoSatisfecho)
+            {
                 return true;
             }
-
-            if (cutEnEstaRama)
+            if (hayCutLocal)
             {
-                hayCut = true;
                 return false;
             }
-        }
-
-        return false;
-    }
-
-    private bool ResolverCuerpo(List<string> cuerpo, int indice, ref bool hayCut, ref bool hayCutAntesDePeso)
-    {
-        if (indice >= cuerpo.Count)
-            return true;
-        string submeta = cuerpo[indice];
-        if (submeta == PESO)
-        {
-            if (hayCutAntesDePeso)
-            {
-                hayCut = true;
-                return ResolverCuerpo(cuerpo, indice + 1, ref hayCut, ref hayCutAntesDePeso);
-            }
-            else
-            {
-                return true;
-            }
-        }
-        if (submeta == CUT)
-        {
-            hayCut = true;
-            return ResolverCuerpo(cuerpo, indice + 1, ref hayCut, ref hayCutAntesDePeso);
-        }
-        if (submeta == FAIL)
-            return false;
-        if (Resolver(submeta, ref hayCut))
-        {
-            return ResolverCuerpo(cuerpo, indice + 1, ref hayCut, ref hayCutAntesDePeso);
+            Vueltas++;
         }
         return false;
     }
+
     public void DescargarPrograma()
     {
-        reglas.Clear();
+        baseDeConocimiento.Clear();
     }
 }

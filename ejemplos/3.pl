@@ -3,4 +3,4 @@ b :- q, c.
 a. 
 c.
 
-% loop infinito
+% q - loop infinito

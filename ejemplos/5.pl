@@ -3,4 +3,4 @@ p :- a, c, b.
 p :- b.
 b.
 
-% p - true
+% p - true 
